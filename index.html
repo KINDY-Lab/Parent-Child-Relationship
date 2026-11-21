@@ -95,25 +95,68 @@ footer{text-align:center;color:var(--muted);font-size:12px}
   display:block;margin:0 auto 12px;
   width:min(520px,100%);height:auto
 }
-.screenshot-hint{
-  display:none;background:var(--blue);
-  border-radius:12px;padding:14px 16px;
-  font-size:14px;margin-top:12px
+.warm-open{color:var(--green);font-size:16px;margin:0 0 10px}
+.section-head{
+  display:flex;justify-content:space-between;
+  align-items:flex-start;gap:12px;
+  cursor:pointer;user-select:none
 }
+.section-head h3{margin:0}
+.chev{
+  color:#7FA693;font-size:20px;flex:none;
+  line-height:1.6;transition:transform .25s
+}
+.story-section.collapsed .chev{transform:rotate(-90deg)}
+.story-section.collapsed .story-body{display:none}
+.warm-note{
+  background:linear-gradient(135deg,#F5EEF9,#FBF7EC);
+  padding:22px;margin:19px 0;border-radius:13px
+}
+.warm-note p{margin:10px 0}
+.reveal{opacity:0;animation:fadeUp .6s ease forwards}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:none}
+}
+@media(prefers-reduced-motion:reduce){
+  .reveal{animation:none;opacity:1}
+}
+.img-overlay{
+  position:fixed;inset:0;background:rgba(20,32,45,.55);
+  display:flex;align-items:center;justify-content:center;
+  z-index:50;padding:16px
+}
+.img-overlay.hidden{display:none}
+.img-sheet{
+  background:#fff;border-radius:16px;padding:14px;
+  max-width:520px;width:100%;max-height:86vh;
+  overflow:auto;text-align:center
+}
+.img-sheet img{
+  width:100%;height:auto;display:block;
+  border-radius:8px;border:1px solid var(--line)
+}
+.save-tip{
+  font-size:14px;background:var(--blue);
+  border-radius:10px;padding:10px 12px;margin-bottom:10px
+}
+.img-sheet .actions{margin-top:12px;justify-content:center}
+footer a{color:inherit}
 @media(max-width:600px){
   h1{font-size:25px}
   .card{padding:18px}
   .choice{flex:1 1 40%}
   .desktop-only{display:none}
-  .screenshot-hint{display:block}
 }
 @media print{
   body{background:white}
   main{margin:0;max-width:none}
-  #quiz,.actions,.no-print{display:none!important}
+  #quiz,.actions,.no-print,.img-overlay{display:none!important}
   #report{display:block!important}
   .card{border:0;padding:0}
   .story-section{break-inside:avoid}
+  .story-body{display:block!important}
+  .reveal{animation:none;opacity:1!important}
 }
 </style>
 </head>
@@ -157,6 +200,9 @@ footer{text-align:center;color:var(--muted);font-size:12px}
 <section id="report" class="card hidden">
   <div class="kicker">Your Personal Reflection</div>
   <h2>Your Relationship Story / 你的亲子关系故事</h2>
+  <p class="warm-open">
+    Thank you for looking back so honestly. 谢谢你愿意认真地回望自己的成长。
+  </p>
   <p class="muted">
     This report offers possible ways to understand your
     experiences, not a judgment of you or your family.
@@ -165,32 +211,58 @@ footer{text-align:center;color:var(--muted);font-size:12px}
   </p>
 
   <div class="story-section">
-    <div class="kicker">01 · Understanding the Past</div>
-    <h3>What Your Experiences May Tell You / 理解你的成长经历</h3>
-    <div id="story"></div>
+    <div class="section-head" onclick="toggleSection(this)" role="button" tabindex="0">
+      <div>
+        <div class="kicker">🌱 01 · Understanding the Past</div>
+        <h3>What Your Experiences May Tell You / 理解你的成长经历</h3>
+      </div>
+      <span class="chev">▾</span>
+    </div>
+    <div class="story-body" id="story"></div>
   </div>
 
   <div class="story-section">
-    <div class="kicker">02 · Seeing the Present</div>
-    <h3>How Your Past May Shape Your Present / 过去与现在的联系</h3>
-    <div id="present"></div>
+    <div class="section-head" onclick="toggleSection(this)" role="button" tabindex="0">
+      <div>
+        <div class="kicker">🧭 02 · Seeing the Present</div>
+        <h3>How Your Past May Shape Your Present / 过去与现在的联系</h3>
+      </div>
+      <span class="chev">▾</span>
+    </div>
+    <div class="story-body" id="present"></div>
   </div>
 
   <div class="story-section">
-    <div class="kicker">03 · Your Relationship with Parents</div>
-    <h3>Finding Your Own Way / 如何与父母相处</h3>
-    <div id="parents"></div>
+    <div class="section-head" onclick="toggleSection(this)" role="button" tabindex="0">
+      <div>
+        <div class="kicker">🤝 03 · Your Relationship with Parents</div>
+        <h3>Finding Your Own Way / 如何与父母相处</h3>
+      </div>
+      <span class="chev">▾</span>
+    </div>
+    <div class="story-body" id="parents"></div>
   </div>
 
   <div class="story-section">
-    <div class="kicker">04 · Future Parenting</div>
-    <h3>What You May Carry Forward / 对未来养育孩子的启发</h3>
-    <div id="children"></div>
+    <div class="section-head" onclick="toggleSection(this)" role="button" tabindex="0">
+      <div>
+        <div class="kicker">🌟 04 · Future Parenting</div>
+        <h3>What You May Carry Forward / 对未来养育孩子的启发</h3>
+      </div>
+      <span class="chev">▾</span>
+    </div>
+    <div class="story-body" id="children"></div>
   </div>
 
   <div class="reflection">
-    <h3>A Question Worth Keeping / 一个值得带走的问题</h3>
+    <h3>💭 A Question Worth Keeping / 一个值得带走的问题</h3>
     <div id="finalQuestion"></div>
+  </div>
+
+  <div class="warm-note">
+    <div class="kicker">✨ For You · 写给你</div>
+    <p>无论如何作答，愿意认真回望自己的成长，本身就需要勇气。你的感受值得被看见，你的故事值得被温柔对待。</p>
+    <p class="en">Whatever your answers were, looking back honestly takes courage. Your feelings deserve to be seen, and your story deserves to be treated with kindness.</p>
   </div>
 
   <p class="small">
@@ -203,19 +275,15 @@ footer{text-align:center;color:var(--muted);font-size:12px}
   </p>
 
   <div class="actions no-print">
-    <button class="desktop-only" onclick="window.print()">
-      Save as PDF / 保存 PDF
+    <button onclick="saveReportImage()">
+      Save as Image / 保存报告图片
     </button>
-    <button class="secondary desktop-only" onclick="downloadReport()">
-      Download Report / 下载报告
+    <button class="secondary desktop-only" onclick="window.print()">
+      Save as PDF / 保存 PDF
     </button>
     <button class="secondary" onclick="editAnswers()">
       Edit Answers / 修改答案
     </button>
-  </div>
-  <div class="screenshot-hint">
-    📱 手机上可以长按屏幕截图，保存这份报告 /
-    On a phone, press and hold to screenshot this report.
   </div>
 </section>
 
@@ -233,7 +301,26 @@ footer{text-align:center;color:var(--muted);font-size:12px}
   <br>
   Your answers are processed locally in your browser.
   No personal responses are uploaded.
+  <br>
+  Created by Runke Huang ·
+  <a href="mailto:runkehuang@cuhk.edu.cn">runkehuang@cuhk.edu.cn</a>
 </footer>
+
+<div id="imgOverlay" class="img-overlay hidden no-print" onclick="closeOverlay()">
+  <div class="img-sheet" onclick="event.stopPropagation()">
+    <div class="save-tip">
+      📱 长按下方图片，选择「保存图片」即可保存到相册 /
+      Press &amp; hold the image, then choose "Save Image"
+    </div>
+    <img id="reportImage"
+      alt="My Parent–Child Relationship Story report image">
+    <div class="actions">
+      <button class="secondary" onclick="closeOverlay()">
+        Close / 关闭
+      </button>
+    </div>
+  </div>
+</div>
 </main>
 
 <script>
@@ -531,7 +618,9 @@ function generateReport(){
     main.question[0],main.question[1]
   );
 
+  lastPatterns=patterns;
   $("report").classList.remove("hidden");
+  animateReport();
   $("report").scrollIntoView({behavior:"smooth"});
 }
 
@@ -547,19 +636,206 @@ function resetAll(){
   window.scrollTo({top:0,behavior:"smooth"});
 }
 
-function downloadReport(){
-  const text=$("report").innerText;
-  const blob=new Blob([text],{
-    type:"text/plain;charset=utf-8"
+function toggleSection(head){
+  head.parentElement.classList.toggle("collapsed");
+}
+
+function closeOverlay(){
+  $("imgOverlay").classList.add("hidden");
+}
+
+let lastPatterns=null;
+
+function animateReport(){
+  document.querySelectorAll(
+    "#report .story-section,#report .reflection,#report .warm-note"
+  ).forEach((el,i)=>{
+    el.classList.remove("collapsed","reveal");
+    void el.offsetWidth;
+    el.style.animationDelay=(0.08+i*0.14)+"s";
+    el.classList.add("reveal");
   });
-  const url=URL.createObjectURL(blob);
-  const link=document.createElement("a");
-  link.href=url;
-  link.download="My_Parent_Child_Relationship_Story.txt";
-  document.body.appendChild(link);
-  link.click();
-  link.remove();
-  URL.revokeObjectURL(url);
+}
+
+const IMG_SECTIONS=[
+  ["🌱 01 · Understanding the Past","story"],
+  ["🧭 02 · Seeing the Present","present"],
+  ["🤝 03 · Your Relationship with Parents","parents"],
+  ["🌟 04 · Future Parenting","children"]
+];
+const IMG_TITLES={
+  story:"What Your Experiences May Tell You / 理解你的成长经历",
+  present:"How Your Past May Shape Your Present / 过去与现在的联系",
+  parents:"Finding Your Own Way / 如何与父母相处",
+  children:"What You May Carry Forward / 对未来养育孩子的启发"
+};
+const WARM_NOTE_TEXT=[
+  "无论如何作答，愿意认真回望自己的成长，本身就需要勇气。你的感受值得被看见，你的故事值得被温柔对待。",
+  "Whatever your answers were, looking back honestly takes courage. Your feelings deserve to be seen, and your story deserves to be treated with kindness."
+];
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+
+function renderReportCanvas(patterns){
+  const W=1080,PAD=56,IN=44;
+  const CW=W-PAD*2;
+  const canvas=document.createElement("canvas");
+  canvas.width=W;canvas.height=20000;
+  const ctx=canvas.getContext("2d");
+  const font=(s,w)=>
+    (w?w+" ":"")+s+'px Arial,"PingFang SC","Microsoft YaHei",sans-serif';
+  let drawMode=false;
+
+  const wrap=(t,maxW)=>{
+    const out=[];
+    String(t).split("\n").forEach(para=>{
+      let line="";
+      for(const ch of para){
+        if(line&&ctx.measureText(line+ch).width>maxW){
+          out.push(line);line=ch;
+        }else line+=ch;
+      }
+      out.push(line);
+    });
+    return out;
+  };
+
+  const text=(t,x,y0,maxW,f,fill,lh,align)=>{
+    ctx.font=f;ctx.fillStyle=fill;
+    ctx.textBaseline="top";ctx.textAlign=align||"left";
+    let h=0;
+    wrap(t,maxW).forEach(l=>{
+      if(drawMode)ctx.fillText(l,x,y0+h);
+      h+=lh;
+    });
+    return h;
+  };
+
+  const card=(y0,painter,bg)=>{
+    drawMode=false;
+    const h=painter(PAD+IN,y0+IN)+IN*2;
+    if(drawPass){
+      ctx.fillStyle=typeof bg==="function"?bg(h,y0):(bg||"#fff");
+      roundRect(ctx,PAD,y0,CW,h,24);
+      ctx.fill();
+      drawMode=true;
+      painter(PAD+IN,y0+IN);
+      drawMode=false;
+    }
+    return h;
+  };
+
+  let drawPass=false;
+  const chosen=patterns.length?patterns:[GENERAL];
+  const main=patterns[0]||GENERAL;
+
+  const draw=pass=>{
+    drawPass=pass;drawMode=pass;
+    if(pass){
+      ctx.fillStyle="#F7F9FB";
+      ctx.fillRect(0,0,W,canvas.height);
+    }
+    let y=PAD+36;
+    const d=new Date();
+    y+=text(d.getFullYear()+"."+(d.getMonth()+1)+"."+
+      d.getDate(),PAD,y,CW,font(26),"#52667A",34);
+    y+=14;
+    y+=text("My Parent–Child Relationship Story",PAD,y,CW,
+      font(48,"bold"),"#243B58",62);
+    y+=6;
+    y+=text("我的亲子关系故事 · 个人反思报告",PAD,y,CW,
+      font(30),"#243B58",44);
+    y+=38;
+
+    IMG_SECTIONS.forEach(([kick,key])=>{
+      y+=card(y,(x,yTop)=>{
+        let h=text(kick,x,yTop,CW-IN*2,font(27,"bold"),"#527F72",38);
+        h+=10;
+        h+=text(IMG_TITLES[key],x,yTop+h,CW-IN*2,
+          font(34,"bold"),"#243B58",48);
+        h+=20;
+        chosen.forEach(p=>{
+          h+=text(p[key][0],x,yTop+h,CW-IN*2,font(29),"#243B58",45);
+          h+=10;
+          h+=text(p[key][1],x,yTop+h,CW-IN*2,font(23),"#52667A",35);
+          h+=24;
+        });
+        return h;
+      })+26;
+    });
+
+    y+=card(y,(x,yTop)=>{
+      let h=text("💭 A Question Worth Keeping",x,yTop,CW-IN*2,
+        font(27,"bold"),"#527F72",38);
+      h+=14;
+      h+=text(main.question[0],x,yTop+h,CW-IN*2,
+        font(32,"bold"),"#243B58",48);
+      h+=10;
+      h+=text(main.question[1],x,yTop+h,CW-IN*2,font(23),"#52667A",35);
+      return h;
+    },"#EAF1F8")+26;
+
+    y+=card(y,(x,yTop)=>{
+      let h=text("✨ For You · 写给你",x,yTop,CW-IN*2,
+        font(27,"bold"),"#527F72",38);
+      h+=14;
+      h+=text(WARM_NOTE_TEXT[0],x,yTop+h,CW-IN*2,font(30),"#243B58",46);
+      h+=10;
+      h+=text(WARM_NOTE_TEXT[1],x,yTop+h,CW-IN*2,font(23),"#52667A",35);
+      return h;
+    },(h,y0)=>{
+      const g=ctx.createLinearGradient(PAD,y0,W,y0+h);
+      g.addColorStop(0,"#F5EEF9");g.addColorStop(1,"#FBF7EC");
+      return g;
+    })+26;
+
+    y+=18;
+    const logo=document.querySelector(".footer-logo");
+    if(logo&&logo.naturalWidth){
+      const lw=640;
+      const lh=Math.round(logo.naturalHeight*lw/logo.naturalWidth);
+      if(pass)ctx.drawImage(logo,(W-lw)/2,y,lw,lh);
+      y+=lh+20;
+    }
+    y+=text("© 2026 香港中文大学（深圳）人文社科学院",W/2,y,CW,
+      font(24),"#52667A",34,"center");
+    y+=text("School of Humanities and Social Science, CUHK-Shenzhen",
+      W/2,y,CW,font(21),"#52667A",30,"center");
+    y+=8;
+    y+=text("Created by Runke Huang · runkehuang@cuhk.edu.cn",W/2,y,CW,
+      font(22),"#52667A",31,"center");
+    return y+PAD;
+  };
+
+  const total=draw(false);
+  canvas.height=Math.ceil(total);
+  draw(true);
+  return canvas;
+}
+
+function saveReportImage(){
+  const patterns=lastPatterns||selectedPatterns(answers());
+  const canvas=renderReportCanvas(patterns);
+  const url=canvas.toDataURL("image/jpeg",0.92);
+  if(window.matchMedia("(max-width:600px)").matches){
+    $("reportImage").src=url;
+    $("imgOverlay").classList.remove("hidden");
+  }else{
+    const a=document.createElement("a");
+    a.href=url;
+    a.download="My_Parent_Child_Relationship_Story.jpg";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
 }
 
 renderQuestions();
