@@ -1,0 +1,568 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>My Parent–Child Relationship Story</title>
+<link rel="icon" type="image/png" href="favicon.png">
+<style>
+:root{
+  --ink:#243B58;
+  --muted:#52667A;
+  --green:#294F42;
+  --paper:#F7F9FB;
+  --line:#DDE6ED;
+  --blue:#EAF1F8;
+  --sage:#EEF5F0;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:Arial,"Microsoft YaHei","PingFang SC",sans-serif;
+  line-height:1.8
+}
+main{max-width:900px;margin:35px auto;padding:0 18px 55px}
+header{text-align:center;margin-bottom:25px}
+h1{font-size:31px;line-height:1.35;margin:0 0 9px}
+h2{font-size:23px;margin:0 0 12px}
+h3{font-size:19px;margin:0 0 12px}
+.subtitle,.en,.muted{color:var(--muted)}
+.en{font-size:14px;line-height:1.75}
+.card{
+  background:#fff;border:1px solid var(--line);
+  border-radius:17px;padding:28px;margin-bottom:20px
+}
+.intro{
+  background:var(--blue);padding:18px;
+  border-radius:12px;margin:18px 0
+}
+.question{
+  border-bottom:1px solid var(--line);
+  padding:19px 0
+}
+.question:last-child{border:0}
+.q-en{font-weight:700}
+.q-zh{font-size:14px;color:var(--muted);margin-top:3px}
+.choices{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.choice{
+  display:flex;align-items:center;gap:6px;
+  background:#F3F6F9;border:1px solid var(--line);
+  border-radius:9px;padding:8px 10px;
+  font-size:13px;cursor:pointer
+}
+.choice:has(input:checked),.choice.checked{
+  background:#DDECE4;border-color:#6F9C87
+}
+button{
+  background:var(--ink);color:white;border:0;
+  border-radius:10px;padding:12px 19px;
+  cursor:pointer;font-size:15px
+}
+button.secondary{
+  background:white;color:var(--ink);
+  border:1px solid var(--line)
+}
+button:hover{opacity:.87}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:20px}
+.hidden{display:none}
+.progress{
+  height:7px;background:#E4EBF0;border-radius:20px;
+  overflow:hidden;margin:17px 0
+}
+.progress-fill{height:100%;width:0;background:#527F72}
+.story-section{
+  padding:23px;margin:19px 0;
+  border-radius:13px;background:#F5F8FA
+}
+.story-section:nth-of-type(even){background:var(--sage)}
+.story-section p{margin:11px 0}
+.kicker{
+  font-size:12px;letter-spacing:.08em;
+  font-weight:700;color:#527F72;text-transform:uppercase
+}
+.insight{
+  border-left:3px solid #7FA693;
+  padding:4px 0 4px 17px;margin:18px 0
+}
+.reflection{
+  background:var(--blue);padding:20px;
+  border-radius:12px;margin-top:15px
+}
+.small{font-size:13px;color:var(--muted)}
+footer{text-align:center;color:var(--muted);font-size:12px}
+.footer-logo{
+  display:block;margin:0 auto 12px;
+  width:min(520px,100%);height:auto
+}
+.screenshot-hint{
+  display:none;background:var(--blue);
+  border-radius:12px;padding:14px 16px;
+  font-size:14px;margin-top:12px
+}
+@media(max-width:600px){
+  h1{font-size:25px}
+  .card{padding:18px}
+  .choice{flex:1 1 40%}
+  .desktop-only{display:none}
+  .screenshot-hint{display:block}
+}
+@media print{
+  body{background:white}
+  main{margin:0;max-width:none}
+  #quiz,.actions,.no-print{display:none!important}
+  #report{display:block!important}
+  .card{border:0;padding:0}
+  .story-section{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<main>
+<header>
+  <h1>My Parent–Child Relationship Story</h1>
+  <div class="subtitle">
+    我的亲子关系故事 · A Personal Reflection Journey
+  </div>
+</header>
+
+<section id="quiz" class="card">
+  <h2>Part 1 · Looking Back / 回望成长经历</h2>
+  <div class="intro">
+    Think about ONE important caregiver during your
+    adolescence (approximately ages 12–18).
+    <br>
+    请回想你大约12–18岁时，与一位重要照顾者的相处经历。
+    <br><br>
+    There are no right or wrong answers. You may skip
+    questions that feel uncomfortable.
+    <br>
+    这里没有正确或错误的答案。你可以跳过不愿回答的题目。
+  </div>
+  <div class="small" id="progressText">0 / 10 answered</div>
+  <div class="progress">
+    <div class="progress-fill" id="progressFill"></div>
+  </div>
+  <div id="questions"></div>
+  <div class="actions">
+    <button onclick="generateReport()">
+      Discover My Relationship Story / 查看我的反思报告
+    </button>
+    <button class="secondary" onclick="resetAll()">
+      Start Again / 重新填写
+    </button>
+  </div>
+</section>
+
+<section id="report" class="card hidden">
+  <div class="kicker">Your Personal Reflection</div>
+  <h2>Your Relationship Story / 你的亲子关系故事</h2>
+  <p class="muted">
+    This report offers possible ways to understand your
+    experiences, not a judgment of you or your family.
+    <br>
+    这份报告旨在帮助你理解自己的经历，而不是评价你或你的家庭。
+  </p>
+
+  <div class="story-section">
+    <div class="kicker">01 · Understanding the Past</div>
+    <h3>What Your Experiences May Tell You / 理解你的成长经历</h3>
+    <div id="story"></div>
+  </div>
+
+  <div class="story-section">
+    <div class="kicker">02 · Seeing the Present</div>
+    <h3>How Your Past May Shape Your Present / 过去与现在的联系</h3>
+    <div id="present"></div>
+  </div>
+
+  <div class="story-section">
+    <div class="kicker">03 · Your Relationship with Parents</div>
+    <h3>Finding Your Own Way / 如何与父母相处</h3>
+    <div id="parents"></div>
+  </div>
+
+  <div class="story-section">
+    <div class="kicker">04 · Future Parenting</div>
+    <h3>What You May Carry Forward / 对未来养育孩子的启发</h3>
+    <div id="children"></div>
+  </div>
+
+  <div class="reflection">
+    <h3>A Question Worth Keeping / 一个值得带走的问题</h3>
+    <div id="finalQuestion"></div>
+  </div>
+
+  <p class="small">
+    This is an original educational reflection exercise,
+    not a validated psychological assessment or clinical diagnosis.
+    Interpretations are possibilities rather than conclusions.
+    <br>
+    本工具为原创课堂反思活动，不是经过验证的心理测量或临床诊断。
+    所有解读都是供思考的可能性，而非确定结论。
+  </p>
+
+  <div class="actions no-print">
+    <button class="desktop-only" onclick="window.print()">
+      Save as PDF / 保存 PDF
+    </button>
+    <button class="secondary desktop-only" onclick="downloadReport()">
+      Download Report / 下载报告
+    </button>
+    <button class="secondary" onclick="editAnswers()">
+      Edit Answers / 修改答案
+    </button>
+  </div>
+  <div class="screenshot-hint">
+    📱 手机上可以长按屏幕截图，保存这份报告 /
+    On a phone, press and hold to screenshot this report.
+  </div>
+</section>
+
+<footer>
+  <img class="footer-logo" src="logo.png"
+    alt="香港中文大学（深圳）人文社科学院
+    School of Humanities and Social Science, CUHK-Shenzhen">
+  <div>
+    © 2026 香港中文大学（深圳）人文社科学院
+    <br>
+    School of Humanities and Social Science, CUHK-Shenzhen
+  </div>
+  <br>
+  Educational Reflection Tool · Parent–Child Relationships
+  <br>
+  Your answers are processed locally in your browser.
+  No personal responses are uploaded.
+</footer>
+</main>
+
+<script>
+"use strict";
+
+const QUESTIONS=[
+["I felt loved and cared for, even when I made mistakes.",
+ "即使犯错，我仍能感受到照顾者的爱与关心。"],
+["When I was upset, my caregiver tried to understand my feelings.",
+ "当我难过时，照顾者会尝试理解我的感受。"],
+["I could share my true thoughts, even when my caregiver disagreed.",
+ "即使照顾者不同意，我也能表达真实想法。"],
+["I sometimes hid my feelings to avoid worrying or disappointing my caregiver.",
+ "为了不让照顾者担心或失望，我有时会隐藏自己的感受。"],
+["I was allowed to make decisions appropriate for my age.",
+ "我有机会作出符合自己年龄的决定。"],
+["I felt guilty when my choices did not meet my caregiver's expectations.",
+ "当自己的选择不符合照顾者期待时，我会感到内疚。"],
+["After disagreements, we could usually find a way to reconnect.",
+ "发生争执后，我们通常能够重新沟通或和好。"],
+["I sometimes stayed silent because I was afraid of making a conflict worse.",
+ "有时我会选择沉默，因为担心冲突升级。"],
+["I felt that being a 'good child' meant putting my caregiver's needs before my own.",
+ "我觉得做一个“好孩子”，有时意味着把照顾者的需要放在自己之前。"],
+["My caregiver respected my growing need for independence.",
+ "随着我逐渐长大，照顾者能够尊重我对独立的需要。"]
+];
+
+const CHOICES=[
+[1,"Never / 从不"],
+[2,"Rarely / 很少"],
+[3,"Sometimes / 有时"],
+[4,"Often / 经常"],
+[5,"Almost always / 几乎总是"],
+["skip","Prefer not to answer / 不愿回答"]
+];
+
+const $=id=>document.getElementById(id);
+const bilingual=(zh,en)=>
+  `<p>${zh}</p><p class="en">${en}</p>`;
+const insight=(zh,en)=>
+  `<div class="insight">${bilingual(zh,en)}</div>`;
+
+function renderQuestions(){
+  $("questions").innerHTML=QUESTIONS.map((q,i)=>`
+    <div class="question">
+      <div class="q-en">${i+1}. ${q[0]}</div>
+      <div class="q-zh">${q[1]}</div>
+      <div class="choices">
+        ${CHOICES.map(([value,label])=>`
+          <label class="choice">
+            <input type="radio" name="q${i}"
+              value="${value}" onchange="updateProgress()">
+            ${label}
+          </label>
+        `).join("")}
+      </div>
+    </div>
+  `).join("");
+}
+
+function updateProgress(){
+  document.querySelectorAll(".choice").forEach(l=>{
+    const input=l.querySelector("input");
+    l.classList.toggle("checked",!!input&&input.checked);
+  });
+  const count=QUESTIONS.filter((_,i)=>
+    document.querySelector(`input[name=q${i}]:checked`)
+  ).length;
+  $("progressText").textContent=`${count} / 10 answered`;
+  $("progressFill").style.width=`${count*10}%`;
+}
+
+function answers(){
+  return QUESTIONS.map((_,i)=>{
+    const el=document.querySelector(`input[name=q${i}]:checked`);
+    return !el || el.value==="skip" ? null : Number(el.value);
+  });
+}
+
+function high(v){return v!==null&&v>=4}
+function low(v){return v!==null&&v<=2}
+function known(...v){return v.every(x=>x!==null)}
+
+const PATTERNS=[
+{
+  id:"care-without-voice",
+  match:a=>high(a[0])&&low(a[2]),
+  priority:10,
+  story:[
+    "你的回答呈现出一种值得细细理解的体验：你可能感受到照顾者的关爱，但并不总能自在地表达不同的想法。关爱与表达空间并不是同一件事。有些家庭很重视孩子，却也可能不太习惯听到孩子不同的意见。",
+    "Your answers suggest that care and freedom to express yourself may not always have gone together. A caregiver can be loving while finding it difficult to welcome different opinions."
+  ],
+  present:[
+    "你可以留意：现在遇到意见不同时，你是否习惯先猜测对方希望听到什么，再决定自己说什么？如果有，这可能是过去的一种适应方式，而不一定是你真正希望继续采用的沟通方式。",
+    "Notice whether you sometimes predict what others want to hear before sharing your own opinion. If so, this may be a learned way of managing relationships, rather than the only way available to you."
+  ],
+  parents:[
+    "你可以尝试把“感谢关心”和“表达不同意见”放在同一句话里。例如：“我知道你关心我，也谢谢你为我考虑。不过这件事，我有一些不同的想法。”理解父母的心意，并不要求你放弃自己的声音。",
+    "Try combining appreciation with a different opinion: “I know you care about me, and I appreciate that. I also see this differently.” Understanding your parents does not require giving up your voice."
+  ],
+  children:[
+    "未来面对孩子的不同意见时，可以先问：“你为什么这样想？”再决定是否需要指导。孩子需要的不只是被照顾，也包括相信自己的想法值得被听见。",
+    "When a child disagrees, try asking, “What makes you think that?” before giving advice. Children need care, but they also need to feel that their voices matter."
+  ],
+  question:[
+    "如果表达不同意见不代表不孝或不爱，我会更愿意对父母说些什么？",
+    "If disagreement did not mean a lack of love or respect, what would I feel freer to say?"
+  ]
+},
+{
+  id:"love-and-expectations",
+  match:a=>high(a[0])&&high(a[5]),
+  priority:9,
+  story:[
+    "你可能一方面感受到照顾者的爱，另一方面又很在意自己是否让他们失望。这两种感受并不矛盾。有时，我们会把父母的期待慢慢变成对自己的要求，以至于很难分清：“这是我真正想做的，还是我不希望他们失望？”",
+    "You may have felt loved while also feeling responsible for meeting expectations. Over time, parental hopes can become part of our own standards, making it difficult to separate personal wishes from fear of disappointing others."
+  ],
+  present:[
+    "当你作决定时，可以试着区分三件事：我真正想要什么？父母希望我做什么？如果我选择不同的道路，我最担心什么？这三个答案未必相同。",
+    "When making decisions, try separating three questions: What do I want? What do my parents hope for? What am I afraid might happen if I choose differently?"
+  ],
+  parents:[
+    "你可以承认父母的期待对你很重要，同时练习承担自己的决定。例如：“我知道你希望我走一条更稳妥的路，我会认真考虑，但最后我也想为自己的选择负责。”",
+    "You can value your parents' hopes while taking responsibility for your own choices: “I understand why you prefer a safer path. I'll consider it carefully, but I also want to make this decision myself.”"
+  ],
+  children:[
+    "未来鼓励孩子努力时，试着把对孩子这个人的接纳，与对某件事的评价分开。例如：“这次结果不理想，我们一起看看哪里可以改进。但这不影响我爱你。”",
+    "When encouraging a child, separate acceptance of the child from evaluation of performance: “This result wasn't what we hoped for. Let's learn from it. My care for you hasn't changed.”"
+  ],
+  question:[
+    "如果不需要通过满足所有期待来证明自己是一个好孩子，我会如何作出重要决定？",
+    "If I did not need to meet every expectation to be a good child, how might I make important decisions?"
+  ]
+},
+{
+  id:"closeness-and-guilt",
+  match:a=>high(a[5])&&high(a[8]),
+  priority:9,
+  story:[
+    "你可能很重视照顾者的感受，也习惯把家庭的需要放在前面。这可能反映出你对关系的珍惜。但值得留意的是：当你想做一件对自己重要、却可能让父母失望的事时，你是否很难允许自己这样做？",
+    "You may be highly attentive to your caregiver's feelings and family needs. This can reflect commitment to relationships. Yet it is worth asking whether guilt sometimes makes it difficult to pursue needs that matter to you."
+  ],
+  present:[
+    "你可以观察自己是否容易把“别人失望了”和“我做错了”画上等号。实际上，一个人感到失望，并不自动意味着另一个人做错了事。",
+    "Notice whether you sometimes treat another person's disappointment as proof that you have done something wrong. Disappointment and wrongdoing are not the same."
+  ],
+  parents:[
+    "建立界限不一定意味着疏远。你可以温和地说：“我知道这件事让你失望，但我认真考虑过，也需要作出适合自己的决定。”你可以关心父母的情绪，而不必独自负责让他们始终开心。",
+    "Boundaries do not have to mean distance. You might say, “I know this is disappointing, but I've thought carefully and need to make a choice that fits my life.” You can care about your parents' feelings without being responsible for keeping them happy at all times."
+  ],
+  children:[
+    "未来可以让孩子知道：他们不需要通过压抑自己的需要来证明爱你。父母可以有情绪，但不应让孩子承担管理父母情绪的主要责任。",
+    "Help your future child understand that love does not require setting aside all personal needs. Parents can have feelings, but children should not be expected to manage those feelings for them."
+  ],
+  question:[
+    "我能否在关心父母的同时，也允许自己拥有不同的需要？",
+    "Can I care deeply about my parents while allowing myself to have different needs?"
+  ]
+},
+{
+  id:"silence-and-conflict",
+  match:a=>high(a[7])&&low(a[6]),
+  priority:8,
+  story:[
+    "你可能经历过一些难以修复的争执，也可能因此学会在关系紧张时保持沉默。沉默不一定是软弱；在某些环境里，它可能曾是避免冲突升级的有效方式。但过去有用的方式，不一定适合现在所有关系。",
+    "You may have experienced disagreements that were difficult to repair, and silence may have become a way to prevent further conflict. Silence is not necessarily weakness; it may once have been protective."
+  ],
+  present:[
+    "当你现在选择沉默时，可以问自己：“我是想冷静一下，还是担心表达会带来无法承受的后果？”前者可能是一种健康的暂停，后者则值得进一步理解。",
+    "When you stay silent today, ask whether you are taking time to calm down or fearing the consequences of speaking. These can be very different experiences."
+  ],
+  parents:[
+    "不必强迫自己立即讨论困难的话题。你可以先明确谈话的条件，例如：“我愿意讨论这件事，但如果我们开始互相指责，我希望先暂停。”如果关系不安全，保持距离也是可以考虑的选择。",
+    "You do not need to force a difficult conversation. You can set conditions: “I'm willing to discuss this, but if we begin blaming each other, I'd like to pause.” If a relationship is unsafe, distance may also be appropriate."
+  ],
+  children:[
+    "未来与孩子发生争执时，可以示范如何暂停与修复：“我现在有点生气，需要冷静一下，但我们晚一点会继续谈。”让孩子知道，冲突不必意味着关系被抛弃。",
+    "When conflict happens with a child, model a pause and return: “I'm upset and need a moment, but we'll talk again later.” This can help children learn that disagreement need not mean abandonment."
+  ],
+  question:[
+    "在我的经历中，沉默是在保护什么？今天我还有哪些其他选择？",
+    "What has silence protected me from, and what other choices might I have today?"
+  ]
+},
+{
+  id:"care-and-independence",
+  match:a=>high(a[0])&&(low(a[4])||low(a[9])),
+  priority:8,
+  story:[
+    "你可能感受到很多关心，却较少拥有自己作决定的空间。照顾者也许希望保护你、减少风险，或认为自己更了解什么对你有利。不过，关心和替你决定并不是同一件事。成长也需要在适当的支持下练习选择。",
+    "You may have experienced substantial care but limited room to make decisions. A caregiver may have wanted to protect you or reduce risks. Yet caring for someone and making decisions for them are not the same."
+  ],
+  present:[
+    "当你面对重要选择时，可以留意自己是否很容易等待别人告诉你“正确答案”。如果有，不妨从较小的决定开始，练习相信自己的判断，并接受选择中不可避免的不确定性。",
+    "Notice whether you often wait for someone else to identify the 'right' choice. If so, small independent decisions can offer opportunities to practice judgment and tolerate uncertainty."
+  ],
+  parents:[
+    "可以尝试从较小的决定开始表达自主需要：“我知道你是担心我。这次我想先自己试一试，如果需要帮助，我会告诉你。”",
+    "Start with a smaller decision: “I know you're concerned. I'd like to try this myself first, and I'll ask for help if I need it.”"
+  ],
+  children:[
+    "未来帮助孩子时，可以先问：“你想先自己试试，还是希望我陪你一起做？”适龄的自主机会能够帮助孩子逐渐发展能力与信心。",
+    "When helping a child, ask: “Would you like to try first, or would you like us to do it together?” Age-appropriate choices can support growing competence and confidence."
+  ],
+  question:[
+    "如果爱不等于替对方作所有决定，我希望亲密关系中的自主是什么样子？",
+    "If love does not mean making every decision for someone, what would healthy independence look like in a close relationship?"
+  ]
+},
+{
+  id:"repair-as-resource",
+  match:a=>high(a[6])&&low(a[7]),
+  priority:6,
+  story:[
+    "你回忆中有较多冲突之后重新沟通的经历，而且不太需要通过沉默避免争执。这可能是关系中重要的资源：你曾体验到，意见不同并不一定意味着失去联系。当然，这并不代表每一次冲突都很容易。",
+    "You recall being able to reconnect after disagreements without always needing to stay silent. This may be an important relationship resource: conflict did not necessarily mean losing connection."
+  ],
+  present:[
+    "可以回想一次成功修复关系的经历：当时是谁先开口？对方做了什么让你愿意继续谈？这些具体做法可能比“我们关系很好”更值得记住。",
+    "Recall a time when a disagreement was repaired. Who reopened the conversation? What helped you feel ready to talk? Those details may be worth carrying forward."
+  ],
+  parents:[
+    "如果过去有过成功沟通的经验，可以尝试把这些方式用于新的分歧，同时接受有些问题可能需要多次谈话才能逐渐理解。",
+    "Draw on ways of communicating that have worked before, while accepting that some issues take more than one conversation."
+  ],
+  children:[
+    "未来可以让孩子看到，成年人也会犯错、道歉和改变。关系的安全感不一定来自从不争吵，也可能来自冲突之后仍愿意重新连接。",
+    "Show children that adults can make mistakes, apologize, and change. Security does not require a conflict-free relationship; repair matters too."
+  ],
+  question:[
+    "过去哪一次关系修复让我感到被理解？我希望把其中什么带到未来的关系里？",
+    "Which experience of repair helped me feel understood, and what would I like to carry into future relationships?"
+  ]
+}
+];
+
+const GENERAL={
+  story:[
+    "你的成长经历可能包含许多不同的面向：关爱、期待、理解、分歧和逐渐增长的独立需要。这些体验不一定能用简单的“好”或“不好”来概括。与其急着给关系下结论，不如试着理解：在这段关系中，你学会了怎样表达感受、寻求支持，以及处理不同意见。",
+    "Your upbringing may have included care, expectations, understanding, disagreements, and a growing need for independence. Rather than labeling the relationship as simply good or bad, consider what it taught you about expressing feelings, seeking support, and handling differences."
+  ],
+  present:[
+    "你可以观察，自己现在面对亲密关系中的分歧时，会更倾向于表达、退让、解释，还是暂时回避？这些反应可能与过去有关，也可能受到后来经历的影响。问卷不能替你确定原因，但可以帮助你提出更好的问题。",
+    "Notice how you respond to disagreements today. Do you express yourself, accommodate others, explain, or withdraw? Past experiences may matter, but later relationships also shape these patterns."
+  ],
+  parents:[
+    "你不需要一次改变整段关系。可以从一个小而具体的互动开始：表达一项需要、认真倾听一次不同意见，或在必要时设立界限。也要记住，关系改善需要双方参与，不应由你独自承担。",
+    "You do not need to change the whole relationship at once. Start with one small interaction: express a need, listen to a different view, or set a boundary when necessary. Relationship change is not yours to accomplish alone."
+  ],
+  children:[
+    "未来如果你成为父母，可以问自己：哪些成长经历让我感受到安全和被理解？哪些经历让我希望给孩子更多选择？你不必完全重复父母的方式，也不必否定过去的一切。你可以有意识地选择。",
+    "If you become a parent, ask which experiences helped you feel safe and understood, and where you would like to offer your child more choice. You can make thoughtful decisions without repeating or rejecting everything from your upbringing."
+  ],
+  question:[
+    "在成长经历中，什么值得我延续？什么是我希望有意识地改变的？",
+    "What would I like to carry forward from my upbringing, and what would I like to change intentionally?"
+  ]
+};
+
+function selectedPatterns(a){
+  return PATTERNS
+    .filter(p=>p.match(a))
+    .sort((x,y)=>y.priority-x.priority)
+    .slice(0,2);
+}
+
+function renderSection(id,patterns,key){
+  const chosen=patterns.length?patterns:[GENERAL];
+  $(id).innerHTML=chosen.map(p=>
+    insight(p[key][0],p[key][1])
+  ).join("");
+}
+
+function generateReport(){
+  const a=answers();
+  const answered=a.filter(v=>v!==null).length;
+  if(answered<7){
+    alert(
+      "Please answer at least 7 questions to generate a meaningful reflection.\n"+
+      "请至少回答7道题，才能生成相对有意义的反思报告。"
+    );
+    return;
+  }
+
+  const patterns=selectedPatterns(a);
+
+  renderSection("story",patterns,"story");
+  renderSection("present",patterns,"present");
+  renderSection("parents",patterns,"parents");
+  renderSection("children",patterns,"children");
+
+  const main=patterns[0]||GENERAL;
+  $("finalQuestion").innerHTML=bilingual(
+    main.question[0],main.question[1]
+  );
+
+  $("report").classList.remove("hidden");
+  $("report").scrollIntoView({behavior:"smooth"});
+}
+
+function editAnswers(){
+  $("quiz").scrollIntoView({behavior:"smooth"});
+}
+
+function resetAll(){
+  document.querySelectorAll("input[type=radio]")
+    .forEach(el=>el.checked=false);
+  $("report").classList.add("hidden");
+  updateProgress();
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+
+function downloadReport(){
+  const text=$("report").innerText;
+  const blob=new Blob([text],{
+    type:"text/plain;charset=utf-8"
+  });
+  const url=URL.createObjectURL(blob);
+  const link=document.createElement("a");
+  link.href=url;
+  link.download="My_Parent_Child_Relationship_Story.txt";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  URL.revokeObjectURL(url);
+}
+
+renderQuestions();
+</script>
+</body>
+</html>
